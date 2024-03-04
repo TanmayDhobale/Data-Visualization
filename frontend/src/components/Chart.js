@@ -1,40 +1,15 @@
+// Chart.js
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 
 const ChartComponent = ({ data }) => {
-  const chartRefs = {
-    intensity: useRef(),
-    relevance: useRef(),
-    likelihood: useRef(),
-    end_year: useRef(),
-    start_year: useRef(),
-    topic: useRef(),
-    sector: useRef(),
-    insight: useRef(),
-    url: useRef(),
-    region: useRef(),
-    impact: useRef(),
-    added: useRef(),
-    published: useRef(),
-    country: useRef(),
-    pestle: useRef(),
-    source: useRef(),
-    title: useRef(),
-  };
+  const chartRefs = useRef({});
+  const charts = useRef([]);
 
   useEffect(() => {
-    const charts = [];
-
-    Object.keys(chartRefs).forEach(field => {
-      const chartRef = chartRefs[field].current;
-      const ctx = chartRef.getContext('2d');
-
+    const createChart = (field, ctx) => {
       const labels = data.map(item => item.title.split(' ')[0]); // Assuming first word of title as labels
       const values = data.map(item => item[field]);
-
-      if (chartRef.chart) {
-        chartRef.chart.destroy();
-      }
 
       const newChart = new Chart(ctx, {
         type: 'bar',
@@ -43,8 +18,8 @@ const ChartComponent = ({ data }) => {
           datasets: [{
             label: field,
             data: values,
-            backgroundColor: 'rgba(54, 162, 235, 0.5)', // Blue color
-            borderColor: 'rgba(54, 162, 235, 1)', // Blue color
+            backgroundColor: 'rgba(255, 99, 132, 0.5)', // Red color
+            borderColor: 'rgba(255, 99, 132, 1)', // Red color
             borderWidth: 1
           }]
         },
@@ -61,19 +36,30 @@ const ChartComponent = ({ data }) => {
         }
       });
 
-      chartRef.chart = newChart;
-      charts.push(newChart);
-    });
+      charts.current.push(newChart);
+    };
+
+    if (data && data.length > 0) {
+      Object.keys(data[0]).forEach(field => {
+        const canvasRef = chartRefs.current[field];
+        if (canvasRef) {
+          const ctx = canvasRef.getContext('2d');
+          if (ctx) {
+            createChart(field, ctx);
+          }
+        }
+      });
+    }
 
     return () => {
-      charts.forEach(chart => chart.destroy());
+      charts.current.forEach(chart => chart.destroy());
     };
   }, [data]);
 
   return (
     <div className="chart-container">
-      {Object.keys(chartRefs).map(field => (
-        <canvas key={field} ref={chartRefs[field]} className="chart" />
+      {data && data.length > 0 && Object.keys(data[0]).map((field, index) => (
+        <canvas key={index} ref={el => chartRefs.current[field] = el} className="chart" />
       ))}
     </div>
   );
