@@ -1,3 +1,4 @@
+// Dashboard.js
 import React, { useState, useEffect } from 'react';
 import ChartComponent from './Chart';
 
@@ -19,8 +20,8 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div>
-      <h1>Data Visualization Dashboard</h1>
+    <div style={{ padding: '20px' }}>
+      <h1 style={{ textAlign: 'center' }}>Data Visualization Dashboard</h1>
       <ChartComponent data={data} />
     </div>
   );
