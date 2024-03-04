@@ -20,8 +20,8 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h1 style={{ textAlign: 'center' }}>Data Visualization Dashboard</h1>
+    <div style={{ padding: '20px' }}>  
+      <h1 style={{ textAlign: 'center' }}>Data Visualization  Dashboard</h1>
       <ChartComponent data={data} />
     </div>
   );
